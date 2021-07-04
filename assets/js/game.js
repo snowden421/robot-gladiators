@@ -2,7 +2,7 @@
 
 // function to generate a random numeric value
 var randomNumber = function(min, max) {
-  var value = Math.floor(Math.random() * (max - min + 1) + min);
+  var value = Math.floor(Math.random() * (max - min) + min);
 
   return value;
 };
@@ -12,7 +12,7 @@ var fightOrSkip = function() {
   var promptFight = window.prompt('Would you like to FIGHT or SKIP this battle? Enter "FIGHT" or "SKIP" to choose.');
 
   // Conditional Recursive Function Call
-  if (!promptFight) {
+  if (promptFight === "" || promptFight === null) {
     window.alert("You need to provide a valid answer! Please try again.");
     return fightOrSkip();
   }
@@ -28,12 +28,11 @@ var fightOrSkip = function() {
     if (confirmSkip) {
       window.alert(playerInfo.name + " has decided to skip this fight. Goodbye!");
       // subtract money from playerMoney for skipping
-      playerInfo.playerMoney = playerInfo.money - 10;
+      playerInfo.playerMoney = Math.max(0, playerInfo.money - 10);
 
       // return true if player wants to leave
       return true;
     }
-    shop();
   }
   return false;
 }
@@ -121,6 +120,9 @@ var startGame = function() {
 
   // fight each enemy robot by looping over them and fighting them one at a time
   for (var i = 0; i < enemyInfo.length; i++) {
+    // check player stats
+    console.log(playerInfo);
+
     // if player is still alive, keep fight next enemy
     if (playerInfo.health > 0) {
       // let player know what round they are in, remember that arrays start at 0 so it needs to have 1 added to it
@@ -131,6 +133,8 @@ var startGame = function() {
 
       // set health for picked enemy
       pickedEnemyObj.health = randomNumber(40, 60);
+      
+      console.log(pickedEnemyObj);
 
       // pass the pickedEnemyObj object variable's value into the fight function, where it will assume the value of the enemy parameter
       fight(pickedEnemyObj);
@@ -161,8 +165,8 @@ var startGame = function() {
 var endGame = function() {
   window.alert("The game has now ended. Let's see how you did!");
 
-  // check localStorage for high schore, if it's not there, use 0
-  var highScore = localStore.getItem("highscore");
+  // check localStorage for high score, if it's not there, use 0
+  var highScore = localStorage.getItem("highscore");
   if (highScore === null) {
     highScore = 0;
   }
@@ -214,8 +218,6 @@ var shop = function() {
   }
 };
 
-/* END GAME FUNCTIONS */
-
 // function to set name
 var getPlayerName = function() {
   var name = "";
@@ -227,6 +229,8 @@ var getPlayerName = function() {
   console.log("Your robot's name is " + name);
   return name;
 };
+
+/* END GAME FUNCTIONS */
 
 // player information
 var playerInfo = {
@@ -276,11 +280,6 @@ var enemyInfo = [
     attack: randomNumber(10, 14)
   }
 ];
-
-console.log(enemyInfo);
-console.log(enemyInfo[0]);
-console.log(enemyInfo[0].name);
-console.log(enemyInfo[0]['attack']);
 
 /* END GAME INFORMATION / VARIABLES */
 
